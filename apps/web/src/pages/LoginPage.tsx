@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react';
 import { Brand } from '../components/Brand';
 import { Icon } from '../components/Icon';
+import { ThemeToggle } from '../components/ThemeToggle';
 import { useHealth } from '../lib/health';
 
 interface LoginPageProps {
@@ -81,6 +82,9 @@ export function LoginPage({ onLogin }: LoginPageProps) {
       </section>
 
       <section className="auth-main">
+        <div className="auth-theme">
+          <ThemeToggle />
+        </div>
         <div className="auth-card">
           <div className="auth-card-head">
             <span className="auth-icon" aria-hidden="true">

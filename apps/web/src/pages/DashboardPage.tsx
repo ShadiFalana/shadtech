@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Brand } from '../components/Brand';
 import { Icon, type IconName } from '../components/Icon';
+import { ThemeToggle } from '../components/ThemeToggle';
 import { useHealth } from '../lib/health';
 
 interface DashboardPageProps {
@@ -146,6 +147,7 @@ export function DashboardPage({ email, onLogout }: DashboardPageProps) {
               <span className="status-dot" aria-hidden="true" />
               {statusLabel}
             </div>
+            <ThemeToggle />
             <div className="topbar-avatar" aria-hidden="true">
               {email.slice(0, 1).toUpperCase()}
             </div>
