@@ -26,7 +26,10 @@ npm run dev:web   # http://localhost:5173
 ```
 
 - فحص صحة الخدمة: <http://localhost:3001/api/v1/health>
-- الواجهة العربية: <http://localhost:5173>
+- الواجهة العربية: <http://localhost:5173> — شاشة دخول تجريبية ثم لوحة تحكم.
+
+> بيانات الدخول غير مفعّلة بعد: أي بريد صحيح وكلمة مرور من 6 أحرف تفتح لوحة التحكم في
+> **وضع المعاينة**. المصادقة الحقيقية تأتي في الخطوة 3.
 
 ## الأوامر
 
@@ -44,6 +47,10 @@ npm run dev:web   # http://localhost:5173
 SHADTECH/
 ├── apps/
 │   └── web/                 # React + Vite (عربي RTL)
+│       └── src/
+│           ├── pages/       # شاشة الدخول ولوحة التحكم
+│           ├── components/  # الهوية البصرية والأيقونات
+│           └── lib/         # فحص صحة API
 ├── backend/                 # NestJS API
 │   └── src/
 │       ├── health/          # GET /api/v1/health
