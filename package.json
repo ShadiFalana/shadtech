@@ -1,0 +1,25 @@
+{
+  "name": "shadtech",
+  "version": "0.1.0",
+  "private": true,
+  "description": "SHADTECH — integrated technology platform for SMEs (monorepo)",
+  "workspaces": [
+    "backend",
+    "apps/*",
+    "packages/*"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev:api": "npm run start:dev -w @shadtech/backend",
+    "dev:web": "npm run dev -w @shadtech/web",
+    "build": "npm run build -w @shadtech/backend && npm run build -w @shadtech/web",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "devDependencies": {
+    "prettier": "^3.4.2"
+  }
+}

@@ -1,0 +1,37 @@
+# dependencies
+node_modules/
+.npm/
+
+# builds
+dist/
+build/
+*.tsbuildinfo
+
+# environment / secrets
+.env
+.env.*
+!.env.example
+
+# databases & local data
+.pgdata/
+*.sqlite
+*.sqlite3
+*.db
+
+# logs & coverage
+logs/
+*.log
+coverage/
+.nyc_output/
+
+# editors & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# tooling caches
+.cache/
+.turbo/
+.eslintcache
