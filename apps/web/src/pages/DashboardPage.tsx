@@ -160,7 +160,7 @@ export function DashboardPage({ user, onLogout }: DashboardPageProps) {
               <Icon name="logout" size={18} />
             </button>
           </div>
-          <p className="sidebar-version">الإصدار 0.1.0 — الخطوة 8</p>
+          <p className="sidebar-version">الإصدار 0.1.0 — الخطوة 10</p>
         </div>
       </aside>
 
@@ -215,7 +215,7 @@ export function DashboardPage({ user, onLogout }: DashboardPageProps) {
             </div>
             <div className="welcome-aside" aria-hidden="true">
               <Icon name="spark" size={30} />
-              <span>الخطوة 8</span>
+              <span>الخطوة 10</span>
             </div>
           </section>
 
@@ -329,7 +329,7 @@ export function DashboardPage({ user, onLogout }: DashboardPageProps) {
             <section className="card" aria-labelledby="next-title">
               <div className="card-head">
                 <h3 id="next-title">الخطوات القادمة</h3>
-                <span className="tag tag-accent">9 من 10</span>
+                <span className="tag tag-accent">10 من 10</span>
               </div>
 
               <ol className="next-list">
@@ -355,7 +355,7 @@ export function DashboardPage({ user, onLogout }: DashboardPageProps) {
             <section className="card" aria-labelledby="activity-title">
               <div className="card-head">
                 <h3 id="activity-title">أحدث النشاطات</h3>
-                <span className="tag tag-muted">سجل التدقيق — الخطوة 8</span>
+                <span className="tag tag-muted">سجل التدقيق — الخطوة 10</span>
               </div>
               <div className="empty-state">
                 <span className="empty-icon">

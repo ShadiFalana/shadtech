@@ -23,6 +23,7 @@
     "db:reset": "npm run db:reset -w @shadtech/backend",
     "build": "npm run build -w @shadtech/backend && npm run build -w @shadtech/web",
     "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "npm run test -w @shadtech/backend",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },

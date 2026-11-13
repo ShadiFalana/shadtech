@@ -11,7 +11,7 @@
     "experimentalDecorators": true,
     "incremental": false,
     "strictPropertyInitialization": false,
-    "types": ["node"]
+    "types": ["node", "jest"]
   },
   "include": ["src/**/*.ts", "scripts/**/*.ts", "prisma/**/*.ts"],
   "exclude": ["node_modules", "dist"]
