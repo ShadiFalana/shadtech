@@ -1,10 +1,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
+import { AuditService } from '../audit/audit.service';
 
 @Injectable()
 export class CustomersService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly audit: AuditService,
+  ) {}
 
   async list(tenantId: string, search?: string) {
     const where: Prisma.CustomerWhereInput = { tenantId };
@@ -33,6 +37,7 @@ export class CustomersService {
 
   async create(
     tenantId: string,
+    actingUserId: string,
     input: {
       name: string;
       email?: string;
@@ -41,7 +46,7 @@ export class CustomersService {
       notes?: string;
     },
   ) {
-    return this.prisma.customer.create({
+    const created = await this.prisma.customer.create({
       data: {
         tenantId,
         name: input.name.trim(),
@@ -51,6 +56,15 @@ export class CustomersService {
         notes: input.notes?.trim() || null,
       },
     });
+    void this.audit.log({
+      tenantId,
+      userId: actingUserId,
+      action: 'customer.created',
+      resource: 'customer',
+      resourceId: created.id,
+      metadata: { name: created.name },
+    });
+    return created;
   }
 
   async update(
@@ -79,11 +93,19 @@ export class CustomersService {
     return this.prisma.customer.update({ where: { id }, data });
   }
 
-  async remove(tenantId: string, id: string): Promise<void> {
+  async remove(tenantId: string, actingUserId: string, id: string): Promise<void> {
     const existing = await this.prisma.customer.findFirst({ where: { id, tenantId } });
     if (!existing) {
       throw new NotFoundException('Customer not found');
     }
     await this.prisma.customer.delete({ where: { id } });
+    void this.audit.log({
+      tenantId,
+      userId: actingUserId,
+      action: 'customer.deleted',
+      resource: 'customer',
+      resourceId: id,
+      metadata: { name: existing.name },
+    });
   }
 }

@@ -45,8 +45,9 @@ export class TenancyController {
   async update(
     @Body() dto: UpdateTenantDto,
     @CurrentTenant() tenant: TenantContext,
+    @CurrentUser() user: AuthenticatedUser,
   ): Promise<{ id: string; slug: string; name: string }> {
-    const updated = await this.tenancy.rename(tenant.id, dto.name);
+    const updated = await this.tenancy.rename(tenant.id, dto.name, user.id);
     return { id: updated.id, slug: updated.slug, name: updated.name };
   }
 

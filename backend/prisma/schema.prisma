@@ -32,8 +32,9 @@ model User {
   createdAt    DateTime  @default(now()) @map("created_at")
   updatedAt    DateTime  @updatedAt @map("updated_at")
 
-  sessions RefreshSession[]
+  sessions    RefreshSession[]
   memberships Membership[]
+  auditLogs   AuditLog[]
 
   @@map("users")
 }
@@ -70,6 +71,7 @@ model Tenant {
   companies   Company[]
   branches    Branch[]
   customers   Customer[]
+  auditLogs   AuditLog[]
 
   @@map("tenants")
 }
@@ -201,4 +203,25 @@ model Customer {
   @@index([tenantId])
   @@index([tenantId, name])
   @@map("customers")
+}
+
+/// Audit log entry for sensitive actions within a tenant.
+model AuditLog {
+  id         String   @id @default(uuid()) @db.Uuid
+  tenantId   String   @map("tenant_id") @db.Uuid
+  userId     String?  @map("user_id") @db.Uuid
+  action     String
+  resource   String
+  resourceId String?  @map("resource_id")
+  metadata   Json?
+  ipAddress  String?  @map("ip_address")
+  userAgent  String?  @map("user_agent")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  user   User?  @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([tenantId, createdAt])
+  @@index([tenantId, resource])
+  @@map("audit_logs")
 }

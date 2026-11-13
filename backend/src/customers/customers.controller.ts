@@ -10,6 +10,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
+import { CurrentUser } from '../auth/current-user.decorator';
+import type { AuthenticatedUser } from '../auth/auth.types';
 import { CurrentTenant } from '../tenancy/current-tenant.decorator';
 import { RequirePermissions } from '../tenancy/permissions.decorator';
 import { PermissionsGuard } from '../tenancy/permissions.guard';
@@ -34,8 +36,12 @@ export class CustomersController {
   @UseGuards(JwtAuthGuard, TenantContextGuard, PermissionsGuard)
   @RequirePermissions('customers.write')
   @Throttle({ default: { limit: 30, ttl: 60_000 } })
-  create(@Body() dto: CreateCustomerDto, @CurrentTenant() tenant: TenantContext) {
-    return this.customers.create(tenant.id, dto);
+  create(
+    @Body() dto: CreateCustomerDto,
+    @CurrentTenant() tenant: TenantContext,
+    @CurrentUser() user: AuthenticatedUser,
+  ) {
+    return this.customers.create(tenant.id, user.id, dto);
   }
 
   @Get(':id')
@@ -59,8 +65,12 @@ export class CustomersController {
   @Delete(':id')
   @UseGuards(JwtAuthGuard, TenantContextGuard, PermissionsGuard)
   @RequirePermissions('customers.write')
-  async remove(@Param('id') id: string, @CurrentTenant() tenant: TenantContext) {
-    await this.customers.remove(tenant.id, id);
+  async remove(
+    @Param('id') id: string,
+    @CurrentTenant() tenant: TenantContext,
+    @CurrentUser() user: AuthenticatedUser,
+  ) {
+    await this.customers.remove(tenant.id, user.id, id);
     return { deleted: true };
   }
 }

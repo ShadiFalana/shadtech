@@ -1815,6 +1815,81 @@ ol {
   }
 }
 
+/* ---------- Audit ---------- */
+.audit-panel .card-head .tag {
+  margin-inline-start: auto;
+}
+
+.audit-toolbar {
+  display: flex;
+  gap: 0.7rem;
+  align-items: flex-end;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.audit-filter {
+  flex: 1;
+  min-width: 160px;
+}
+
+.audit-list {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.audit-item {
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--border-soft);
+  border-radius: 10px;
+  background: var(--bg-soft);
+  display: grid;
+  gap: 0.35rem;
+}
+
+.audit-main {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.audit-action {
+  font-weight: 600;
+  color: var(--primary);
+  font-size: 0.85rem;
+}
+
+.audit-resource {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.audit-id {
+  color: var(--muted-2);
+  font-size: 0.7rem;
+}
+
+.audit-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.6rem;
+  color: var(--muted-2);
+  font-size: 0.72rem;
+}
+
+.audit-metadata {
+  margin-top: 0.3rem;
+  padding: 0.5rem 0.6rem;
+  border: 1px solid var(--border-soft);
+  border-radius: 8px;
+  background: var(--panel-2);
+  color: var(--code);
+  font-size: 0.72rem;
+  overflow-x: auto;
+  white-space: pre-wrap;
+}
+
 /* ---------- Responsive ---------- */
 @media (max-width: 1080px) {
   .content-grid {

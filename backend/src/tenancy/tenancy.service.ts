@@ -10,6 +10,7 @@ import { Prisma, type Membership, type Role, type Tenant } from '@prisma/client'
 import { PrismaService } from '../prisma/prisma.service';
 import { DEFAULT_ROLE_KEY } from './permissions';
 import { DEFAULT_TENANT_SETTINGS } from './tenant-defaults';
+import { AuditService } from '../audit/audit.service';
 import type { TenantMembershipSummary } from './tenancy.types';
 
 type MembershipWithRelations = Membership & {
@@ -23,7 +24,10 @@ const SETTING_KEY_PATTERN = /^[a-z0-9][a-z0-9._-]{0,63}$/;
 export class TenancyService {
   private readonly logger = new Logger(TenancyService.name);
 
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly audit: AuditService,
+  ) {}
 
   async listForUser(userId: string): Promise<TenantMembershipSummary[]> {
     const memberships = await this.prisma.membership.findMany({
@@ -96,11 +100,24 @@ export class TenancyService {
     return this.toSummary(membership);
   }
 
-  async rename(tenantId: string, name: string): Promise<Tenant> {
-    return this.prisma.tenant.update({
+  async rename(tenantId: string, name: string, actingUserId?: string): Promise<Tenant> {
+    const updated = await this.prisma.tenant.update({
       where: { id: tenantId },
       data: { name: name.trim() },
     });
+
+    if (actingUserId) {
+      void this.audit.log({
+        tenantId,
+        userId: actingUserId,
+        action: 'tenant.updated',
+        resource: 'tenant',
+        resourceId: tenantId,
+        metadata: { name },
+      });
+    }
+
+    return updated;
   }
 
   async getSettings(tenantId: string): Promise<Record<string, unknown>> {

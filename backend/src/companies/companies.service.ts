@@ -1,10 +1,14 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
+import { AuditService } from '../audit/audit.service';
 
 @Injectable()
 export class CompaniesService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly audit: AuditService,
+  ) {}
 
   // ---------- companies ----------
 
@@ -27,15 +31,28 @@ export class CompaniesService {
     return company;
   }
 
-  async createCompany(tenantId: string, input: { name: string; code?: string }) {
+  async createCompany(
+    tenantId: string,
+    actingUserId: string,
+    input: { name: string; code?: string },
+  ) {
     try {
-      return await this.prisma.company.create({
+      const created = await this.prisma.company.create({
         data: {
           tenantId,
           name: input.name.trim(),
           code: input.code?.trim() || null,
         },
       });
+      void this.audit.log({
+        tenantId,
+        userId: actingUserId,
+        action: 'company.created',
+        resource: 'company',
+        resourceId: created.id,
+        metadata: { name: created.name },
+      });
+      return created;
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
         throw new ConflictException('A company with this name already exists');
@@ -69,12 +86,20 @@ export class CompaniesService {
     }
   }
 
-  async deleteCompany(tenantId: string, id: string): Promise<void> {
+  async deleteCompany(tenantId: string, actingUserId: string, id: string): Promise<void> {
     const existing = await this.prisma.company.findFirst({ where: { id, tenantId } });
     if (!existing) {
       throw new NotFoundException('Company not found');
     }
     await this.prisma.company.delete({ where: { id } });
+    void this.audit.log({
+      tenantId,
+      userId: actingUserId,
+      action: 'company.deleted',
+      resource: 'company',
+      resourceId: id,
+      metadata: { name: existing.name },
+    });
   }
 
   // ---------- branches ----------

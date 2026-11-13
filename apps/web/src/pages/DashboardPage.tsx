@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { AuditPanel } from '../components/AuditPanel';
 import { Brand } from '../components/Brand';
 import { CompaniesPanel } from '../components/CompaniesPanel';
 import { CustomersPanel } from '../components/CustomersPanel';
@@ -43,9 +44,9 @@ const stats = [
 ];
 
 const nextSteps = [
-  { title: 'سجل التدقيق', note: 'تسجيل الأحداث الحساسة', state: 'التالية' },
-  { title: 'واجهة الاستخدام', note: 'شاشات الوحدات المنجزة', state: 'مقفلة' },
+  { title: 'واجهة الاستخدام', note: 'شاشات الوحدات المنجزة', state: 'التالية' },
   { title: 'الاختبارات والتوثيق', note: 'اختبارات وتكامل مستمر', state: 'مقفلة' },
+  { title: 'الذكاء الاصطناعي', note: 'مساعدو الذكاء الاصطناعي', state: 'مقفلة' },
 ];
 
 const moduleChips = [
@@ -159,7 +160,7 @@ export function DashboardPage({ user, onLogout }: DashboardPageProps) {
               <Icon name="logout" size={18} />
             </button>
           </div>
-          <p className="sidebar-version">الإصدار 0.1.0 — الخطوة 7</p>
+          <p className="sidebar-version">الإصدار 0.1.0 — الخطوة 8</p>
         </div>
       </aside>
 
@@ -214,7 +215,7 @@ export function DashboardPage({ user, onLogout }: DashboardPageProps) {
             </div>
             <div className="welcome-aside" aria-hidden="true">
               <Icon name="spark" size={30} />
-              <span>الخطوة 7</span>
+              <span>الخطوة 8</span>
             </div>
           </section>
 
@@ -225,6 +226,8 @@ export function DashboardPage({ user, onLogout }: DashboardPageProps) {
           <MembersPanel />
 
           <CustomersPanel />
+
+          <AuditPanel />
 
           <section className="stats-grid" aria-label="المؤشرات">
             {stats.map((stat) => (
@@ -326,13 +329,13 @@ export function DashboardPage({ user, onLogout }: DashboardPageProps) {
             <section className="card" aria-labelledby="next-title">
               <div className="card-head">
                 <h3 id="next-title">الخطوات القادمة</h3>
-                <span className="tag tag-accent">8 من 10</span>
+                <span className="tag tag-accent">9 من 10</span>
               </div>
 
               <ol className="next-list">
                 {nextSteps.map((step, index) => (
                   <li key={step.title}>
-                    <span className="next-number">{index + 8}</span>
+                    <span className="next-number">{index + 9}</span>
                     <div>
                       <p className="next-title">{step.title}</p>
                       <p className="next-note">{step.note}</p>

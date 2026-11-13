@@ -7,10 +7,14 @@ import {
 } from '@nestjs/common';
 import { hashPassword } from '../auth/password.util';
 import { PrismaService } from '../prisma/prisma.service';
+import { AuditService } from '../audit/audit.service';
 
 @Injectable()
 export class MembersService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly audit: AuditService,
+  ) {}
 
   async list(tenantId: string) {
     return this.prisma.membership.findMany({
@@ -64,7 +68,7 @@ export class MembersService {
       throw new ConflictException('User is already a member of this tenant');
     }
 
-    return this.prisma.membership.create({
+    const created = await this.prisma.membership.create({
       data: { userId: user.id, tenantId, roleId: role.id },
       include: {
         user: {
@@ -80,6 +84,17 @@ export class MembersService {
         role: { select: { id: true, key: true, name: true } },
       },
     });
+
+    void this.audit.log({
+      tenantId,
+      userId: actingUserId,
+      action: 'member.added',
+      resource: 'membership',
+      resourceId: created.id,
+      metadata: { email: user.email, roleKey: role.key },
+    });
+
+    return created;
   }
 
   async updateRole(tenantId: string, actingUserId: string, membershipId: string, roleKey: string) {
@@ -100,7 +115,7 @@ export class MembersService {
       throw new ForbiddenException('You cannot change your own role');
     }
 
-    return this.prisma.membership.update({
+    const updated = await this.prisma.membership.update({
       where: { id: membershipId },
       data: { roleId: role.id },
       include: {
@@ -117,6 +132,17 @@ export class MembersService {
         role: { select: { id: true, key: true, name: true } },
       },
     });
+
+    void this.audit.log({
+      tenantId,
+      userId: actingUserId,
+      action: 'member.role_changed',
+      resource: 'membership',
+      resourceId: membershipId,
+      metadata: { roleKey: role.key },
+    });
+
+    return updated;
   }
 
   async remove(tenantId: string, actingUserId: string, membershipId: string) {
@@ -149,6 +175,15 @@ export class MembersService {
     }
 
     await this.prisma.membership.delete({ where: { id: membershipId } });
+
+    void this.audit.log({
+      tenantId,
+      userId: actingUserId,
+      action: 'member.removed',
+      resource: 'membership',
+      resourceId: membershipId,
+    });
+
     return { deleted: true };
   }
 
@@ -172,6 +207,15 @@ export class MembersService {
       where: { id: membership.userId },
       data: { passwordHash: await hashPassword(newPassword) },
     });
+
+    void this.audit.log({
+      tenantId,
+      userId: actingUserId,
+      action: 'member.password_reset',
+      resource: 'membership',
+      resourceId: membershipId,
+    });
+
     return { reset: true };
   }
 }

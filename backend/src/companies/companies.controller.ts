@@ -27,8 +27,12 @@ export class CompaniesController {
   @UseGuards(JwtAuthGuard, TenantContextGuard, PermissionsGuard)
   @RequirePermissions('companies.write')
   @Throttle({ default: { limit: 30, ttl: 60_000 } })
-  create(@Body() dto: CreateCompanyDto, @CurrentTenant() tenant: TenantContext) {
-    return this.companies.createCompany(tenant.id, dto);
+  create(
+    @Body() dto: CreateCompanyDto,
+    @CurrentTenant() tenant: TenantContext,
+    @CurrentUser() user: AuthenticatedUser,
+  ) {
+    return this.companies.createCompany(tenant.id, user.id, dto);
   }
 
   @Get(':id')
@@ -52,8 +56,12 @@ export class CompaniesController {
   @Delete(':id')
   @UseGuards(JwtAuthGuard, TenantContextGuard, PermissionsGuard)
   @RequirePermissions('companies.write')
-  async remove(@Param('id') id: string, @CurrentTenant() tenant: TenantContext) {
-    await this.companies.deleteCompany(tenant.id, id);
+  async remove(
+    @Param('id') id: string,
+    @CurrentTenant() tenant: TenantContext,
+    @CurrentUser() user: AuthenticatedUser,
+  ) {
+    await this.companies.deleteCompany(tenant.id, user.id, id);
     return { deleted: true };
   }
 
