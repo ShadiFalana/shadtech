@@ -34,6 +34,8 @@ import { JwtAuthGuard } from './jwt-auth.guard';
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtAuthGuard],
-  exports: [AuthService, JwtAuthGuard],
+  // JwtModule is exported so feature modules (e.g. TenancyModule) can reuse
+  // `JwtAuthGuard`, which is instantiated in the consuming module's context.
+  exports: [AuthService, JwtAuthGuard, JwtModule],
 })
 export class AuthModule {}

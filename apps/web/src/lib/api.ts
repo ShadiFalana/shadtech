@@ -5,6 +5,8 @@ export interface ApiRequestOptions {
   body?: unknown;
   /** Attach the in-memory access token (defaults to true). */
   auth?: boolean;
+  /** Send the active tenant id as `X-Tenant-Id` (defaults to true). */
+  tenant?: boolean;
   /** Retry once after refreshing the access token on 401 (defaults to true). */
   retryOn401?: boolean;
   signal?: AbortSignal;
@@ -29,6 +31,7 @@ interface AuthBridge {
 }
 
 let accessToken: string | null = null;
+let tenantIdResolver: (() => string | null) | null = null;
 let authBridge: AuthBridge | null = null;
 
 /** The access token lives in memory only; the refresh token stays in an HttpOnly cookie. */
@@ -38,6 +41,19 @@ export function setAccessToken(token: string | null): void {
 
 export function getAccessToken(): string | null {
   return accessToken;
+}
+
+/**
+ * Registers the active tenant lookup. The tenancy provider keeps the resolver
+ * pointed at its latest tenant ref, so requests read the correct id even when
+ * a child effect runs before the provider's own effects.
+ */
+export function setTenantIdResolver(resolver: (() => string | null) | null): void {
+  tenantIdResolver = resolver;
+}
+
+export function getTenantId(): string | null {
+  return tenantIdResolver ? tenantIdResolver() : null;
 }
 
 export function setAuthBridge(bridge: AuthBridge | null): void {
@@ -70,7 +86,7 @@ async function readError(response: Response): Promise<ApiError> {
  * for the refresh endpoint, and refreshes once when the access token expired.
  */
 export async function apiRequest<T>(path: string, options: ApiRequestOptions = {}): Promise<T> {
-  const { method = 'GET', body, auth = true, retryOn401 = true, signal } = options;
+  const { method = 'GET', body, auth = true, tenant = true, retryOn401 = true, signal } = options;
 
   async function send(): Promise<Response> {
     const headers: Record<string, string> = { Accept: 'application/json' };
@@ -80,6 +96,10 @@ export async function apiRequest<T>(path: string, options: ApiRequestOptions = {
     const token = auth ? (authBridge?.getAccessToken() ?? accessToken) : null;
     if (token) {
       headers.Authorization = `Bearer ${token}`;
+    }
+    const activeTenantId = auth && tenant ? getTenantId() : null;
+    if (activeTenantId) {
+      headers['X-Tenant-Id'] = activeTenantId;
     }
 
     return fetch(`${API_BASE}${path}`, {

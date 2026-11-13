@@ -1,9 +1,12 @@
 import { useState } from 'react';
 import { Brand } from '../components/Brand';
 import { Icon, type IconName } from '../components/Icon';
+import { TenantPanel } from '../components/TenantPanel';
+import { TenantSwitcher } from '../components/TenantSwitcher';
 import { ThemeToggle } from '../components/ThemeToggle';
 import type { AuthUser } from '../lib/auth';
 import { useHealth } from '../lib/health';
+import { useTenancy } from '../lib/tenancy';
 
 interface DashboardPageProps {
   user: AuthUser;
@@ -35,9 +38,9 @@ const stats = [
 ];
 
 const nextSteps = [
-  { title: 'الصلاحيات وتعدد المؤسسات', note: 'أدوار وعزل بيانات', state: 'التالية' },
-  { title: 'الشركات والفروع', note: 'الهيكل التنظيمي للمؤسسة', state: 'مقفلة' },
+  { title: 'الشركات والفروع', note: 'الهيكل التنظيمي للمؤسسة', state: 'التالية' },
   { title: 'إدارة المستخدمين', note: 'دعوات وحسابات وأدوار', state: 'مقفلة' },
+  { title: 'العملاء', note: 'سجل العملاء وجهات الاتصال', state: 'مقفلة' },
 ];
 
 const moduleChips = [
@@ -59,6 +62,7 @@ export function DashboardPage({ user, onLogout }: DashboardPageProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
   const { state: health, refresh } = useHealth();
+  const { activeTenant } = useTenancy();
 
   const initial = (user.fullName.trim() || user.email).slice(0, 1).toUpperCase();
   const lastLogin = user.lastLoginAt
@@ -110,8 +114,10 @@ export function DashboardPage({ user, onLogout }: DashboardPageProps) {
           </button>
         </div>
 
+        <TenantSwitcher />
+
         <nav className="sidebar-nav">
-          <span className="sidebar-label">مساحة العمل</span>
+          <span className="sidebar-label">مساحة العمل</span>{' '}
           {navItems.map((item) => (
             <button
               key={item.label}
@@ -135,6 +141,7 @@ export function DashboardPage({ user, onLogout }: DashboardPageProps) {
             <span className="user-meta">
               <strong>{user.fullName}</strong>
               <small dir="ltr">{user.email}</small>
+              {activeTenant && <small className="user-role">{activeTenant.role.name}</small>}
             </span>
             <button
               type="button"
@@ -147,7 +154,7 @@ export function DashboardPage({ user, onLogout }: DashboardPageProps) {
               <Icon name="logout" size={18} />
             </button>
           </div>
-          <p className="sidebar-version">الإصدار 0.1.0 — الخطوة 3</p>
+          <p className="sidebar-version">الإصدار 0.1.0 — الخطوة 4</p>
         </div>
       </aside>
 
@@ -191,15 +198,22 @@ export function DashboardPage({ user, onLogout }: DashboardPageProps) {
         <main className="content">
           <section className="welcome-banner">
             <div>
-              <span className="eyebrow">مساحة العمل</span>
+              <span className="eyebrow">
+                {activeTenant ? `مساحة العمل · ${activeTenant.name}` : 'مساحة العمل'}
+              </span>
               <h2>مرحبًا، {user.fullName}</h2>
-              <p>تم تسجيل دخولك بأمان. ستُملأ المؤشرات بالبيانات الحقيقية بعد بناء وحدات الأعمال.</p>
+              <p>
+                أنت تعمل الآن داخل مؤسستك بدور «{activeTenant?.role.name ?? '—'}». كل بيانات هذه
+                المؤسسة معزولة عن غيرها، وستُملأ المؤشرات بعد بناء وحدات الأعمال.
+              </p>
             </div>
             <div className="welcome-aside" aria-hidden="true">
               <Icon name="spark" size={30} />
-              <span>الخطوة 3</span>
+              <span>الخطوة 4</span>
             </div>
           </section>
+
+          <TenantPanel />
 
           <section className="stats-grid" aria-label="المؤشرات">
             {stats.map((stat) => (
@@ -301,13 +315,13 @@ export function DashboardPage({ user, onLogout }: DashboardPageProps) {
             <section className="card" aria-labelledby="next-title">
               <div className="card-head">
                 <h3 id="next-title">الخطوات القادمة</h3>
-                <span className="tag tag-accent">4 من 10</span>
+                <span className="tag tag-accent">5 من 10</span>
               </div>
 
               <ol className="next-list">
                 {nextSteps.map((step, index) => (
                   <li key={step.title}>
-                    <span className="next-number">{index + 4}</span>
+                    <span className="next-number">{index + 5}</span>
                     <div>
                       <p className="next-title">{step.title}</p>
                       <p className="next-note">{step.note}</p>

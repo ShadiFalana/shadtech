@@ -20,6 +20,9 @@ export type IconName =
   | 'database'
   | 'spark'
   | 'building'
+  | 'plus'
+  | 'pencil'
+  | 'refresh'
   | 'sun'
   | 'moon';
 
@@ -121,6 +124,21 @@ const paths: Record<IconName, ReactNode> = {
       <path d="M4 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16" />
       <path d="M16 9h3a1 1 0 0 1 1 1v11M2 21h20" />
       <path d="M8 7h2M8 11h2M8 15h2" />
+    </>
+  ),
+  plus: <path d="M12 5v14M5 12h14" />,
+  pencil: (
+    <>
+      <path d="M4 20h4l10.5-10.5a2.1 2.1 0 0 0-3-3L5 17v3Z" />
+      <path d="m13.5 6.5 3 3" />
+    </>
+  ),
+  refresh: (
+    <>
+      <path d="M20 11a8 8 0 0 0-14.2-4.5L4 8" />
+      <path d="M4 4v4h4" />
+      <path d="M4 13a8 8 0 0 0 14.2 4.5L20 16" />
+      <path d="M20 20v-4h-4" />
     </>
   ),
   sun: (

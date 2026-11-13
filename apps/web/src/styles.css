@@ -1169,6 +1169,266 @@ ol {
   font-size: 0.72rem;
 }
 
+/* ---------- Tenancy ---------- */
+.tenant-switcher {
+  display: grid;
+  gap: 0.45rem;
+  padding: 0 0.25rem 0.9rem;
+  margin-bottom: 0.6rem;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.tenant-switcher .sidebar-label {
+  padding-inline: 0.4rem;
+}
+
+.tenant-select {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.5rem 0.6rem;
+  border: 1px solid var(--border-soft);
+  border-radius: 10px;
+  background: var(--card-bg);
+  color: var(--muted);
+}
+
+.tenant-select .icon {
+  flex: none;
+  color: var(--primary);
+}
+
+.tenant-select select {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  font-size: 0.82rem;
+  outline: none;
+  cursor: pointer;
+}
+
+.tenant-select select option {
+  background: var(--panel);
+  color: var(--text);
+}
+
+.tenant-select.is-static .tenant-select-name {
+  flex: 1;
+  min-width: 0;
+  color: var(--text);
+  font-size: 0.82rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tenant-role-hint {
+  padding-inline: 0.4rem;
+  color: var(--muted-2);
+  font-size: 0.7rem;
+}
+
+.tenant-role-hint strong {
+  color: var(--text);
+}
+
+.tenant-add {
+  font-size: 0.82rem;
+}
+
+.tenant-create-panel {
+  padding: 0.7rem;
+  border: 1px solid var(--border-soft);
+  border-radius: 12px;
+  background: var(--bg-soft);
+}
+
+.create-tenant {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.create-tenant.is-compact {
+  gap: 0.6rem;
+}
+
+.create-tenant.is-compact .field-label {
+  font-size: 0.72rem;
+}
+
+.create-tenant.is-compact .field input {
+  padding: 0.55rem 0.65rem;
+  font-size: 0.82rem;
+}
+
+.create-tenant.is-compact .auth-hint {
+  font-size: 0.68rem;
+}
+
+.create-tenant-actions {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.user-meta small.user-role {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.tenant-identity {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.7rem 0.75rem;
+  border: 1px solid var(--border-soft);
+  border-radius: 12px;
+  background: var(--bg-soft);
+}
+
+.tenant-logo {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  flex: none;
+  border-radius: 12px;
+  border: 1px solid var(--primary-line);
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+
+.tenant-meta {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.35;
+}
+
+.tenant-meta strong {
+  font-size: 0.92rem;
+}
+
+.tenant-meta small {
+  color: var(--muted-2);
+  font-size: 0.72rem;
+}
+
+.tenant-identity .tag {
+  margin-inline-start: auto;
+}
+
+.tenant-rename {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.7rem;
+  margin-top: 0.9rem;
+}
+
+.tenant-rename .field {
+  flex: 1;
+}
+
+.tenant-rename .button {
+  flex: none;
+}
+
+.tenant-perms,
+.tenant-settings {
+  margin-top: 1.1rem;
+}
+
+.tenant-perms-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.6rem;
+}
+
+.tenant-perms-head .link-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.chip-list-sm li {
+  padding: 0.2rem 0.55rem;
+  font-size: 0.68rem;
+}
+
+.settings-list {
+  display: grid;
+  gap: 0.3rem;
+  margin-bottom: 0.6rem;
+}
+
+.settings-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.5rem 0.65rem;
+  border: 1px solid var(--border-soft);
+  border-radius: 9px;
+  background: var(--bg-soft);
+  font-size: 0.78rem;
+}
+
+.settings-key {
+  color: var(--code);
+}
+
+.settings-value {
+  max-width: 55%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--muted);
+}
+
+.setting-form {
+  display: grid;
+  gap: 0.6rem;
+  margin-top: 0.4rem;
+}
+
+.setting-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 0.6rem;
+}
+
+.inline-success {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.6rem;
+  color: var(--success-text);
+  font-size: 0.78rem;
+}
+
+.inline-success .icon {
+  color: var(--success);
+}
+
+.onboarding-logout {
+  display: block;
+  margin-top: 1rem;
+}
+
+.splash-error {
+  max-width: 42ch;
+  text-align: center;
+  color: var(--danger);
+}
+
+.splash-actions {
+  display: flex;
+  gap: 0.6rem;
+}
+
 /* ---------- Responsive ---------- */
 @media (max-width: 1080px) {
   .content-grid {
@@ -1251,6 +1511,15 @@ ol {
 @media (max-width: 620px) {
   .topbar .status-pill {
     display: none;
+  }
+
+  .tenant-rename {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .setting-form-row {
+    grid-template-columns: 1fr;
   }
 
   .welcome-banner {
