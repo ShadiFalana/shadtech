@@ -4,11 +4,14 @@ import { PermissionsGuard } from './permissions.guard';
 import { TenantContextGuard } from './tenant-context.guard';
 import { TenancyController } from './tenancy.controller';
 import { TenancyService } from './tenancy.service';
+import { MembersController } from './members.controller';
+import { MembersService } from './members.service';
+import { RolesController } from './roles.controller';
 
 @Module({
   imports: [AuthModule],
-  controllers: [TenancyController],
-  providers: [TenancyService, TenantContextGuard, PermissionsGuard],
-  exports: [TenancyService, TenantContextGuard, PermissionsGuard],
+  controllers: [TenancyController, MembersController, RolesController],
+  providers: [TenancyService, MembersService, TenantContextGuard, PermissionsGuard],
+  exports: [TenancyService, MembersService, TenantContextGuard, PermissionsGuard],
 })
 export class TenancyModule {}

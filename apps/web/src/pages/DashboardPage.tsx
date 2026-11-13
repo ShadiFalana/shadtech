@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Brand } from '../components/Brand';
 import { CompaniesPanel } from '../components/CompaniesPanel';
 import { Icon, type IconName } from '../components/Icon';
+import { MembersPanel } from '../components/MembersPanel';
 import { TenantPanel } from '../components/TenantPanel';
 import { TenantSwitcher } from '../components/TenantSwitcher';
 import { ThemeToggle } from '../components/ThemeToggle';
@@ -25,6 +26,7 @@ const navItems: NavItem[] = [
   { label: 'لوحة التحكم', icon: 'dashboard', active: true },
   { label: 'التذاكر والدعم', icon: 'ticket' },
   { label: 'العملاء', icon: 'users' },
+  { label: 'إدارة المستخدمين', icon: 'users', soon: false },
   { label: 'المبيعات والفوترة', icon: 'invoice' },
   { label: 'المخزون', icon: 'box' },
   { label: 'الشركات والفروع', icon: 'building', soon: false },
@@ -40,9 +42,9 @@ const stats = [
 ];
 
 const nextSteps = [
-  { title: 'إدارة المستخدمين', note: 'دعوات وحسابات وأدوار', state: 'التالية' },
-  { title: 'العملاء', note: 'سجل العملاء وجهات الاتصال', state: 'مقفلة' },
+  { title: 'العملاء', note: 'سجل العملاء وجهات الاتصال', state: 'التالية' },
   { title: 'سجل التدقيق', note: 'تسجيل الأحداث الحساسة', state: 'مقفلة' },
+  { title: 'واجهة الاستخدام', note: 'شاشات الوحدات المنجزة', state: 'مقفلة' },
 ];
 
 const moduleChips = [
@@ -156,7 +158,7 @@ export function DashboardPage({ user, onLogout }: DashboardPageProps) {
               <Icon name="logout" size={18} />
             </button>
           </div>
-          <p className="sidebar-version">الإصدار 0.1.0 — الخطوة 5</p>
+          <p className="sidebar-version">الإصدار 0.1.0 — الخطوة 6</p>
         </div>
       </aside>
 
@@ -211,13 +213,15 @@ export function DashboardPage({ user, onLogout }: DashboardPageProps) {
             </div>
             <div className="welcome-aside" aria-hidden="true">
               <Icon name="spark" size={30} />
-              <span>الخطوة 5</span>
+              <span>الخطوة 6</span>
             </div>
           </section>
 
           <TenantPanel />
 
           <CompaniesPanel />
+
+          <MembersPanel />
 
           <section className="stats-grid" aria-label="المؤشرات">
             {stats.map((stat) => (
@@ -319,13 +323,13 @@ export function DashboardPage({ user, onLogout }: DashboardPageProps) {
             <section className="card" aria-labelledby="next-title">
               <div className="card-head">
                 <h3 id="next-title">الخطوات القادمة</h3>
-                <span className="tag tag-accent">6 من 10</span>
+                <span className="tag tag-accent">7 من 10</span>
               </div>
 
               <ol className="next-list">
                 {nextSteps.map((step, index) => (
                   <li key={step.title}>
-                    <span className="next-number">{index + 6}</span>
+                    <span className="next-number">{index + 7}</span>
                     <div>
                       <p className="next-title">{step.title}</p>
                       <p className="next-note">{step.note}</p>
