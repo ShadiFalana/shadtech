@@ -1,11 +1,19 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
+export interface DatabaseCheck {
+  status: 'up' | 'down';
+  latencyMs: number | null;
+}
+
 export interface HealthResponse {
-  status: string;
+  status: 'ok' | 'degraded';
   service: string;
   version: string;
   timestamp: string;
   uptimeSeconds: number;
+  checks: {
+    database: DatabaseCheck;
+  };
 }
 
 export type HealthState =

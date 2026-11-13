@@ -34,9 +34,9 @@ const stats = [
 ];
 
 const nextSteps = [
-  { title: 'قاعدة البيانات', note: 'PostgreSQL + Prisma والهجرات', state: 'التالية' },
-  { title: 'المصادقة', note: 'تسجيل الدخول والجلسات', state: 'مقفلة' },
+  { title: 'المصادقة', note: 'تسجيل الدخول والجلسات', state: 'التالية' },
   { title: 'الصلاحيات وتعدد المؤسسات', note: 'أدوار وعزل بيانات', state: 'مقفلة' },
+  { title: 'الشركات والفروع', note: 'الهيكل التنظيمي للمؤسسة', state: 'مقفلة' },
 ];
 
 const moduleChips = [
@@ -67,6 +67,7 @@ export function DashboardPage({ email, onLogout }: DashboardPageProps) {
 
   const statusLabel =
     health.kind === 'online' ? 'الخدمة متصلة' : health.kind === 'checking' ? 'جارٍ الفحص' : 'الخدمة متوقفة';
+  const database = health.kind === 'online' ? health.data.checks.database : null;
 
   return (
     <div className="app-shell">
@@ -113,7 +114,7 @@ export function DashboardPage({ email, onLogout }: DashboardPageProps) {
               <Icon name="logout" size={18} />
             </button>
           </div>
-          <p className="sidebar-version">الإصدار 0.1.0 — الخطوة 1</p>
+          <p className="sidebar-version">الإصدار 0.1.0 — الخطوة 2</p>
         </div>
       </aside>
 
@@ -160,13 +161,13 @@ export function DashboardPage({ email, onLogout }: DashboardPageProps) {
               <span className="eyebrow">وضع المعاينة</span>
               <h2>مرحبًا بك في SHADTECH</h2>
               <p>
-                هذه لوحة التحكم التأسيسية. ستُملأ المؤشرات بالبيانات الحقيقية بعد ربط قاعدة
-                البيانات وبناء الوحدات.
+                هذه لوحة التحكم التأسيسية. ستُملأ المؤشرات بالبيانات الحقيقية بعد بناء وحدات
+                الأعمال.
               </p>
             </div>
             <div className="welcome-aside" aria-hidden="true">
               <Icon name="spark" size={30} />
-              <span>الخطوة 1</span>
+              <span>الخطوة 2</span>
             </div>
           </section>
 
@@ -209,7 +210,26 @@ export function DashboardPage({ email, onLogout }: DashboardPageProps) {
                     <Icon name="database" size={17} />
                     قاعدة البيانات
                   </span>
-                  <span className="tag tag-muted">الخطوة 2</span>
+                  <span
+                    className={`tag ${
+                      database?.status === 'up' ? 'tag-ok' : database ? 'tag-off' : 'tag-muted'
+                    }`}
+                  >
+                    {database
+                      ? database.status === 'up'
+                        ? 'تعمل'
+                        : 'متوقفة'
+                      : '—'}
+                  </span>
+                </li>
+                <li>
+                  <span className="status-list-label">
+                    <Icon name="spark" size={17} />
+                    استجابة القاعدة
+                  </span>
+                  <span className="mono">
+                    {database?.status === 'up' ? `${database.latencyMs} ms` : '—'}
+                  </span>
                 </li>
                 <li>
                   <span className="status-list-label">
@@ -242,13 +262,13 @@ export function DashboardPage({ email, onLogout }: DashboardPageProps) {
             <section className="card" aria-labelledby="next-title">
               <div className="card-head">
                 <h3 id="next-title">الخطوات القادمة</h3>
-                <span className="tag tag-accent">2 من 10</span>
+                <span className="tag tag-accent">3 من 10</span>
               </div>
 
               <ol className="next-list">
                 {nextSteps.map((step, index) => (
                   <li key={step.title}>
-                    <span className="next-number">{index + 2}</span>
+                    <span className="next-number">{index + 3}</span>
                     <div>
                       <p className="next-title">{step.title}</p>
                       <p className="next-note">{step.note}</p>

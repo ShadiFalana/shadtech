@@ -20,6 +20,7 @@ async function bootstrap(): Promise<void> {
       transform: true,
     }),
   );
+  app.enableShutdownHooks();
 
   const port = Number(process.env.PORT ?? 3001);
   await app.listen(port);

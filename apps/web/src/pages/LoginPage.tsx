@@ -43,7 +43,7 @@ export function LoginPage({ onLogin }: LoginPageProps) {
         <Brand />
 
         <div className="auth-aside-body">
-          <span className="eyebrow">الخطوة 1 — الأساس</span>
+          <span className="eyebrow">الخطوة 2 — قاعدة البيانات</span>
           <h1>
             نواة واحدة
             <br />

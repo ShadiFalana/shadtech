@@ -1,0 +1,22 @@
+// SHADTECH database schema.
+// Step 2 introduces the database foundation only. Business entities (users,
+// tenants, customers, tickets, ...) are added in their own steps.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// Platform-level key/value settings (feature flags, schema metadata, ...).
+model SystemSetting {
+  key       String   @id
+  value     Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("system_settings")
+}
