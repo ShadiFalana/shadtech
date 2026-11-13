@@ -1,4 +1,5 @@
 import { Brand } from './components/Brand';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import { Icon } from './components/Icon';
 import { AuthProvider, useAuth } from './lib/auth';
 import { TenancyProvider, useTenancy } from './lib/tenancy';
@@ -70,7 +71,9 @@ function App() {
   return (
     <AuthProvider>
       <TenancyProvider>
-        <AppContent />
+        <ErrorBoundary>
+          <AppContent />
+        </ErrorBoundary>
       </TenancyProvider>
     </AuthProvider>
   );
