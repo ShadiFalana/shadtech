@@ -1,34 +1,38 @@
-import { useEffect, useState } from 'react';
+import { Brand } from './components/Brand';
+import { AuthProvider, useAuth } from './lib/auth';
 import { DashboardPage } from './pages/DashboardPage';
 import { LoginPage } from './pages/LoginPage';
 
-const SESSION_KEY = 'shadtech.preview.email';
+function SplashScreen() {
+  return (
+    <div className="splash" role="status" aria-live="polite">
+      <Brand />
+      <span className="spinner" aria-hidden="true" />
+      <p>جارٍ استعادة الجلسة…</p>
+    </div>
+  );
+}
+
+function AppContent() {
+  const { status, user, logout } = useAuth();
+
+  if (status === 'loading') {
+    return <SplashScreen />;
+  }
+
+  if (status === 'guest' || !user) {
+    return <LoginPage />;
+  }
+
+  return <DashboardPage user={user} onLogout={logout} />;
+}
 
 function App() {
-  const [email, setEmail] = useState<string | null>(null);
-
-  useEffect(() => {
-    const stored = sessionStorage.getItem(SESSION_KEY);
-    if (stored) {
-      setEmail(stored);
-    }
-  }, []);
-
-  function handleLogin(nextEmail: string) {
-    sessionStorage.setItem(SESSION_KEY, nextEmail);
-    setEmail(nextEmail);
-  }
-
-  function handleLogout() {
-    sessionStorage.removeItem(SESSION_KEY);
-    setEmail(null);
-  }
-
-  if (!email) {
-    return <LoginPage onLogin={handleLogin} />;
-  }
-
-  return <DashboardPage email={email} onLogout={handleLogout} />;
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
+  );
 }
 
 export default App;

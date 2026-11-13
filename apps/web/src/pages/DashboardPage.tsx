@@ -2,11 +2,12 @@ import { useState } from 'react';
 import { Brand } from '../components/Brand';
 import { Icon, type IconName } from '../components/Icon';
 import { ThemeToggle } from '../components/ThemeToggle';
+import type { AuthUser } from '../lib/auth';
 import { useHealth } from '../lib/health';
 
 interface DashboardPageProps {
-  email: string;
-  onLogout: () => void;
+  user: AuthUser;
+  onLogout: () => Promise<void> | void;
 }
 
 interface NavItem {
@@ -34,9 +35,9 @@ const stats = [
 ];
 
 const nextSteps = [
-  { title: 'المصادقة', note: 'تسجيل الدخول والجلسات', state: 'التالية' },
-  { title: 'الصلاحيات وتعدد المؤسسات', note: 'أدوار وعزل بيانات', state: 'مقفلة' },
+  { title: 'الصلاحيات وتعدد المؤسسات', note: 'أدوار وعزل بيانات', state: 'التالية' },
   { title: 'الشركات والفروع', note: 'الهيكل التنظيمي للمؤسسة', state: 'مقفلة' },
+  { title: 'إدارة المستخدمين', note: 'دعوات وحسابات وأدوار', state: 'مقفلة' },
 ];
 
 const moduleChips = [
@@ -54,9 +55,30 @@ const moduleChips = [
   'ذكاء الأعمال',
 ];
 
-export function DashboardPage({ email, onLogout }: DashboardPageProps) {
+export function DashboardPage({ user, onLogout }: DashboardPageProps) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [signingOut, setSigningOut] = useState(false);
   const { state: health, refresh } = useHealth();
+
+  const initial = (user.fullName.trim() || user.email).slice(0, 1).toUpperCase();
+  const lastLogin = user.lastLoginAt
+    ? new Intl.DateTimeFormat('ar-PS', {
+        dateStyle: 'medium',
+        timeStyle: 'short',
+      }).format(new Date(user.lastLoginAt))
+    : '—';
+
+  async function handleLogout() {
+    if (signingOut) {
+      return;
+    }
+    setSigningOut(true);
+    try {
+      await onLogout();
+    } finally {
+      setSigningOut(false);
+    }
+  }
 
   const today = new Intl.DateTimeFormat('ar-PS', {
     weekday: 'long',
@@ -66,7 +88,11 @@ export function DashboardPage({ email, onLogout }: DashboardPageProps) {
   }).format(new Date());
 
   const statusLabel =
-    health.kind === 'online' ? 'الخدمة متصلة' : health.kind === 'checking' ? 'جارٍ الفحص' : 'الخدمة متوقفة';
+    health.kind === 'online'
+      ? 'الخدمة متصلة'
+      : health.kind === 'checking'
+        ? 'جارٍ الفحص'
+        : 'الخدمة متوقفة';
   const database = health.kind === 'online' ? health.data.checks.database : null;
 
   return (
@@ -104,17 +130,24 @@ export function DashboardPage({ email, onLogout }: DashboardPageProps) {
         <div className="sidebar-foot">
           <div className="user-card">
             <span className="avatar" aria-hidden="true">
-              {email.slice(0, 1).toUpperCase()}
+              {initial}
             </span>
             <span className="user-meta">
-              <strong>مدير النظام</strong>
-              <small dir="ltr">{email}</small>
+              <strong>{user.fullName}</strong>
+              <small dir="ltr">{user.email}</small>
             </span>
-            <button type="button" className="icon-button" onClick={onLogout} aria-label="تسجيل الخروج">
+            <button
+              type="button"
+              className="icon-button"
+              onClick={() => void handleLogout()}
+              disabled={signingOut}
+              aria-label="تسجيل الخروج"
+              title="تسجيل الخروج"
+            >
               <Icon name="logout" size={18} />
             </button>
           </div>
-          <p className="sidebar-version">الإصدار 0.1.0 — الخطوة 2</p>
+          <p className="sidebar-version">الإصدار 0.1.0 — الخطوة 3</p>
         </div>
       </aside>
 
@@ -150,7 +183,7 @@ export function DashboardPage({ email, onLogout }: DashboardPageProps) {
             </div>
             <ThemeToggle />
             <div className="topbar-avatar" aria-hidden="true">
-              {email.slice(0, 1).toUpperCase()}
+              {initial}
             </div>
           </div>
         </header>
@@ -158,16 +191,13 @@ export function DashboardPage({ email, onLogout }: DashboardPageProps) {
         <main className="content">
           <section className="welcome-banner">
             <div>
-              <span className="eyebrow">وضع المعاينة</span>
-              <h2>مرحبًا بك في SHADTECH</h2>
-              <p>
-                هذه لوحة التحكم التأسيسية. ستُملأ المؤشرات بالبيانات الحقيقية بعد بناء وحدات
-                الأعمال.
-              </p>
+              <span className="eyebrow">مساحة العمل</span>
+              <h2>مرحبًا، {user.fullName}</h2>
+              <p>تم تسجيل دخولك بأمان. ستُملأ المؤشرات بالبيانات الحقيقية بعد بناء وحدات الأعمال.</p>
             </div>
             <div className="welcome-aside" aria-hidden="true">
               <Icon name="spark" size={30} />
-              <span>الخطوة 2</span>
+              <span>الخطوة 3</span>
             </div>
           </section>
 
@@ -202,7 +232,11 @@ export function DashboardPage({ email, onLogout }: DashboardPageProps) {
                     خدمة API
                   </span>
                   <span className={`tag ${health.kind === 'online' ? 'tag-ok' : 'tag-off'}`}>
-                    {health.kind === 'online' ? 'تعمل' : health.kind === 'checking' ? '...' : 'متوقفة'}
+                    {health.kind === 'online'
+                      ? 'تعمل'
+                      : health.kind === 'checking'
+                        ? '...'
+                        : 'متوقفة'}
                   </span>
                 </li>
                 <li>
@@ -215,11 +249,7 @@ export function DashboardPage({ email, onLogout }: DashboardPageProps) {
                       database?.status === 'up' ? 'tag-ok' : database ? 'tag-off' : 'tag-muted'
                     }`}
                   >
-                    {database
-                      ? database.status === 'up'
-                        ? 'تعمل'
-                        : 'متوقفة'
-                      : '—'}
+                    {database ? (database.status === 'up' ? 'تعمل' : 'متوقفة') : '—'}
                   </span>
                 </li>
                 <li>
@@ -236,11 +266,20 @@ export function DashboardPage({ email, onLogout }: DashboardPageProps) {
                     <Icon name="shield" size={17} />
                     المصادقة
                   </span>
-                  <span className="tag tag-muted">الخطوة 3</span>
+                  <span className="tag tag-ok">مفعّلة</span>
+                </li>
+                <li>
+                  <span className="status-list-label">
+                    <Icon name="users" size={17} />
+                    آخر دخول
+                  </span>
+                  <span className="mono">{lastLogin}</span>
                 </li>
                 <li>
                   <span className="status-list-label">الإصدار</span>
-                  <span className="mono">{health.kind === 'online' ? health.data.version : '—'}</span>
+                  <span className="mono">
+                    {health.kind === 'online' ? health.data.version : '—'}
+                  </span>
                 </li>
                 <li>
                   <span className="status-list-label">مدة التشغيل</span>
@@ -262,13 +301,13 @@ export function DashboardPage({ email, onLogout }: DashboardPageProps) {
             <section className="card" aria-labelledby="next-title">
               <div className="card-head">
                 <h3 id="next-title">الخطوات القادمة</h3>
-                <span className="tag tag-accent">3 من 10</span>
+                <span className="tag tag-accent">4 من 10</span>
               </div>
 
               <ol className="next-list">
                 {nextSteps.map((step, index) => (
                   <li key={step.title}>
-                    <span className="next-number">{index + 3}</span>
+                    <span className="next-number">{index + 4}</span>
                     <div>
                       <p className="next-title">{step.title}</p>
                       <p className="next-note">{step.note}</p>
