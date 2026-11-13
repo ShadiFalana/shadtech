@@ -1696,6 +1696,125 @@ ol {
   }
 }
 
+/* ---------- Customers ---------- */
+.customers-panel .card-head .tag {
+  margin-inline-start: auto;
+}
+
+.customer-toolbar {
+  display: flex;
+  gap: 0.7rem;
+  align-items: flex-end;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.customer-search {
+  flex: 1;
+  min-width: 220px;
+}
+
+.customer-form {
+  display: grid;
+  gap: 0.7rem;
+  padding: 0.8rem;
+  border: 1px solid var(--border-soft);
+  border-radius: 12px;
+  background: var(--bg-soft);
+  margin-bottom: 1rem;
+}
+
+.customer-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+}
+
+.customer-form-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.customer-list {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.customer-item {
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--border-soft);
+  border-radius: 12px;
+  background: var(--bg-soft);
+}
+
+.customer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+
+.customer-identity {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-width: 0;
+}
+
+.customer-identity strong {
+  font-size: 0.9rem;
+}
+
+.customer-actions {
+  display: flex;
+  gap: 0.3rem;
+}
+
+.customer-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1rem;
+  margin-top: 0.4rem;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.customer-notes {
+  width: 100%;
+  margin-top: 0.3rem;
+  color: var(--muted-2);
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+.customer-form textarea {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--input-bg);
+  color: var(--text);
+  font-size: 0.85rem;
+  outline: none;
+  resize: vertical;
+  font-family: inherit;
+}
+
+.customer-form textarea:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-soft);
+}
+
+@media (max-width: 720px) {
+  .customer-form-row {
+    grid-template-columns: 1fr;
+  }
+  .customer-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
 /* ---------- Responsive ---------- */
 @media (max-width: 1080px) {
   .content-grid {

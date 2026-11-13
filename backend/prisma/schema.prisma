@@ -69,6 +69,7 @@ model Tenant {
   settings    TenantSetting[]
   companies   Company[]
   branches    Branch[]
+  customers   Customer[]
 
   @@map("tenants")
 }
@@ -180,4 +181,24 @@ model Branch {
   @@index([tenantId])
   @@index([companyId])
   @@map("branches")
+}
+
+/// A customer record, tenant-scoped.
+model Customer {
+  id        String   @id @default(uuid()) @db.Uuid
+  tenantId  String   @map("tenant_id") @db.Uuid
+  name      String
+  email     String?
+  phone     String?
+  company   String?
+  notes     String?
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([tenantId, name])
+  @@map("customers")
 }
