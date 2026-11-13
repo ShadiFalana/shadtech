@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { AuthModule } from './auth/auth.module';
+import { CompaniesModule } from './companies/companies.module';
 import { HealthModule } from './health/health.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { TenancyModule } from './tenancy/tenancy.module';
@@ -22,6 +23,7 @@ import { TenancyModule } from './tenancy/tenancy.module';
     PrismaModule,
     AuthModule,
     TenancyModule,
+    CompaniesModule,
     HealthModule,
   ],
   providers: [

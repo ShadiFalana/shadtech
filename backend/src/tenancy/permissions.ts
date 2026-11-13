@@ -35,6 +35,12 @@ export const PERMISSIONS: PermissionDefinition[] = [
   { key: 'inventory.write', group: 'inventory', description: 'إدارة المخزون' },
   { key: 'reports.read', group: 'reports', description: 'عرض التقارير' },
   { key: 'audit.read', group: 'audit', description: 'عرض سجل التدقيق' },
+
+  // Companies and branches (step 5)
+  { key: 'companies.read', group: 'companies', description: 'عرض الشركات' },
+  { key: 'companies.write', group: 'companies', description: 'إدارة الشركات' },
+  { key: 'branches.read', group: 'branches', description: 'عرض الفروع' },
+  { key: 'branches.write', group: 'branches', description: 'إدارة الفروع' },
 ];
 
 export interface RoleDefinition {
@@ -49,6 +55,10 @@ const managerPermissions = [
   'tenant.settings.read',
   'tenant.settings.write',
   'members.read',
+  'companies.read',
+  'companies.write',
+  'branches.read',
+  'branches.write',
   'customers.read',
   'customers.write',
   'tickets.read',
@@ -62,6 +72,8 @@ const managerPermissions = [
 
 const agentPermissions = [
   'tenant.read',
+  'companies.read',
+  'branches.read',
   'customers.read',
   'customers.write',
   'tickets.read',
@@ -72,6 +84,8 @@ const agentPermissions = [
 
 const viewerPermissions = [
   'tenant.read',
+  'companies.read',
+  'branches.read',
   'customers.read',
   'tickets.read',
   'billing.read',

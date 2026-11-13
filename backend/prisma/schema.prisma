@@ -67,6 +67,8 @@ model Tenant {
 
   memberships Membership[]
   settings    TenantSetting[]
+  companies   Company[]
+  branches    Branch[]
 
   @@map("tenants")
 }
@@ -140,4 +142,42 @@ model TenantSetting {
 
   @@id([tenantId, key])
   @@map("tenant_settings")
+}
+
+/// A company (legal entity) inside a tenant.
+model Company {
+  id        String   @id @default(uuid()) @db.Uuid
+  tenantId  String   @map("tenant_id") @db.Uuid
+  name      String
+  code      String?
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  branches Branch[]
+
+  @@unique([tenantId, name])
+  @@index([tenantId])
+  @@map("companies")
+}
+
+/// A branch (location/office) belonging to a company.
+model Branch {
+  id        String   @id @default(uuid()) @db.Uuid
+  tenantId  String   @map("tenant_id") @db.Uuid
+  companyId String   @map("company_id") @db.Uuid
+  name      String
+  code      String?
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  tenant  Tenant  @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@unique([companyId, name])
+  @@index([tenantId])
+  @@index([companyId])
+  @@map("branches")
 }
