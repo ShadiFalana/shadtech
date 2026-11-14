@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { AuthModule } from './auth/auth.module';
+import { BillingModule } from './billing/billing.module';
 import { CompaniesModule } from './companies/companies.module';
 import { CustomersModule } from './customers/customers.module';
 import { TicketsModule } from './tickets/tickets.module';
@@ -25,6 +26,7 @@ import { TenancyModule } from './tenancy/tenancy.module';
     PrismaModule,
     AuthModule,
     TenancyModule,
+    BillingModule,
     CompaniesModule,
     CustomersModule,
     TicketsModule,

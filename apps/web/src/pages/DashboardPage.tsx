@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { AuditPanel } from '../components/AuditPanel';
+import { BillingPanel } from '../components/BillingPanel';
 import { Brand } from '../components/Brand';
 import { CompaniesPanel } from '../components/CompaniesPanel';
 import { TicketsPanel } from '../components/TicketsPanel';
@@ -31,7 +32,7 @@ const navItems: NavItem[] = [
   { label: 'التذاكر والدعم', icon: 'ticket', soon: false },
   { label: 'العملاء', icon: 'users', soon: false },
   { label: 'إدارة المستخدمين', icon: 'users', soon: false },
-  { label: 'المبيعات والفوترة', icon: 'invoice' },
+  { label: 'المبيعات والفوترة', icon: 'invoice', soon: false },
   { label: 'المخزون', icon: 'box' },
   { label: 'الشركات والفروع', icon: 'building', soon: false },
   { label: 'التقارير', icon: 'chart' },
@@ -228,6 +229,8 @@ export function DashboardPage({ user, onLogout }: DashboardPageProps) {
           <MembersPanel />
 
           <CustomersPanel />
+
+          <BillingPanel />
 
           <AuditPanel />
 
