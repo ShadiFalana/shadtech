@@ -3,7 +3,6 @@ import { AuditPanel } from '../components/AuditPanel';
 import { BillingPanel } from '../components/BillingPanel';
 import { Brand } from '../components/Brand';
 import { CompaniesPanel } from '../components/CompaniesPanel';
-import { TicketsPanel } from '../components/TicketsPanel';
 import { CustomersPanel } from '../components/CustomersPanel';
 import { Icon, type IconName } from '../components/Icon';
 import { InventoryPanel } from '../components/InventoryPanel';
@@ -13,6 +12,7 @@ import { SettingsPanel } from '../components/SettingsPanel';
 import { TenantPanel } from '../components/TenantPanel';
 import { TenantSwitcher } from '../components/TenantSwitcher';
 import { ThemeToggle } from '../components/ThemeToggle';
+import { TicketsPanel } from '../components/TicketsPanel';
 import type { AuthUser } from '../lib/auth';
 import { useHealth } from '../lib/health';
 import { useTenancy } from '../lib/tenancy';
@@ -25,20 +25,33 @@ interface DashboardPageProps {
 interface NavItem {
   label: string;
   icon: IconName;
-  active?: boolean;
+  view: View;
   soon?: boolean;
 }
 
+type View =
+  | 'dashboard'
+  | 'tickets'
+  | 'customers'
+  | 'members'
+  | 'billing'
+  | 'inventory'
+  | 'companies'
+  | 'reports'
+  | 'audit'
+  | 'settings';
+
 const navItems: NavItem[] = [
-  { label: 'لوحة التحكم', icon: 'dashboard', active: true },
-  { label: 'التذاكر والدعم', icon: 'ticket', soon: false },
-  { label: 'العملاء', icon: 'users', soon: false },
-  { label: 'إدارة المستخدمين', icon: 'users', soon: false },
-  { label: 'المبيعات والفوترة', icon: 'invoice', soon: false },
-  { label: 'المخزون', icon: 'box', soon: false },
-  { label: 'الشركات والفروع', icon: 'building', soon: false },
-  { label: 'التقارير', icon: 'chart', soon: false },
-  { label: 'الإعدادات', icon: 'settings', soon: false },
+  { label: 'لوحة التحكم', icon: 'dashboard', view: 'dashboard' },
+  { label: 'التذاكر والدعم', icon: 'ticket', view: 'tickets', soon: false },
+  { label: 'العملاء', icon: 'users', view: 'customers', soon: false },
+  { label: 'إدارة المستخدمين', icon: 'users', view: 'members', soon: false },
+  { label: 'المبيعات والفوترة', icon: 'invoice', view: 'billing', soon: false },
+  { label: 'المخزون', icon: 'box', view: 'inventory', soon: false },
+  { label: 'الشركات والفروع', icon: 'building', view: 'companies', soon: false },
+  { label: 'التقارير', icon: 'chart', view: 'reports', soon: false },
+  { label: 'سجل التدقيق', icon: 'chart', view: 'audit', soon: false },
+  { label: 'الإعدادات', icon: 'settings', view: 'settings', soon: false },
 ];
 
 const stats = [
@@ -49,9 +62,9 @@ const stats = [
 ];
 
 const nextSteps = [
-  { title: 'واجهة الاستخدام', note: 'شاشات الوحدات المنجزة', state: 'التالية' },
-  { title: 'الاختبارات والتوثيق', note: 'اختبارات وتكامل مستمر', state: 'مقفلة' },
   { title: 'الذكاء الاصطناعي', note: 'مساعدو الذكاء الاصطناعي', state: 'مقفلة' },
+  { title: 'ذكاء الأعمال', note: 'تحليلات متقدمة', state: 'مقفلة' },
+  { title: 'التكاملات', note: 'API خارجية', state: 'مقفلة' },
 ];
 
 const moduleChips = [
@@ -69,7 +82,21 @@ const moduleChips = [
   'ذكاء الأعمال',
 ];
 
+const viewTitles: Record<View, string> = {
+  dashboard: 'لوحة التحكم',
+  tickets: 'التذاكر والدعم',
+  customers: 'العملاء',
+  members: 'المستخدمون',
+  billing: 'الفوترة والمبيعات',
+  inventory: 'المخزون',
+  companies: 'الشركات والفروع',
+  reports: 'التقارير',
+  audit: 'سجل التدقيق',
+  settings: 'الإعدادات',
+};
+
 export function DashboardPage({ user, onLogout }: DashboardPageProps) {
+  const [view, setView] = useState<View>('dashboard');
   const [menuOpen, setMenuOpen] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
   const { state: health, refresh } = useHealth();
@@ -77,16 +104,13 @@ export function DashboardPage({ user, onLogout }: DashboardPageProps) {
 
   const initial = (user.fullName.trim() || user.email).slice(0, 1).toUpperCase();
   const lastLogin = user.lastLoginAt
-    ? new Intl.DateTimeFormat('ar-PS', {
-        dateStyle: 'medium',
-        timeStyle: 'short',
-      }).format(new Date(user.lastLoginAt))
+    ? new Intl.DateTimeFormat('ar-PS', { dateStyle: 'medium', timeStyle: 'short' }).format(
+        new Date(user.lastLoginAt),
+      )
     : '—';
 
   async function handleLogout() {
-    if (signingOut) {
-      return;
-    }
+    if (signingOut) return;
     setSigningOut(true);
     try {
       await onLogout();
@@ -128,18 +152,23 @@ export function DashboardPage({ user, onLogout }: DashboardPageProps) {
         <TenantSwitcher />
 
         <nav className="sidebar-nav">
-          <span className="sidebar-label">مساحة العمل</span>{' '}
+          <span className="sidebar-label">مساحة العمل</span>
           {navItems.map((item) => (
             <button
               key={item.label}
               type="button"
-              className={`nav-item${item.active ? ' active' : ''}`}
-              aria-current={item.active ? 'page' : undefined}
-              onClick={() => setMenuOpen(false)}
+              className={`nav-item${item.view === view ? ' active' : ''}`}
+              aria-current={item.view === view ? 'page' : undefined}
+              onClick={() => {
+                setView(item.view);
+                setMenuOpen(false);
+              }}
             >
               <Icon name={item.icon} size={19} />
               <span>{item.label}</span>
-              {!item.active && item.soon !== false && <span className="nav-badge">قريبًا</span>}
+              {item.soon !== false && item.view !== view && (
+                <span className="nav-badge">قريبًا</span>
+              )}
             </button>
           ))}
         </nav>
@@ -190,7 +219,7 @@ export function DashboardPage({ user, onLogout }: DashboardPageProps) {
           </button>
 
           <div className="topbar-title">
-            <h1>لوحة التحكم</h1>
+            <h1>{viewTitles[view]}</h1>
             <p>{today}</p>
           </div>
 
@@ -207,195 +236,53 @@ export function DashboardPage({ user, onLogout }: DashboardPageProps) {
         </header>
 
         <main className="content">
-          <section className="welcome-banner">
-            <div>
-              <span className="eyebrow">
-                {activeTenant ? `مساحة العمل · ${activeTenant.name}` : 'مساحة العمل'}
-              </span>
-              <h2>مرحبًا، {user.fullName}</h2>
-              <p>
-                أنت تعمل الآن داخل مؤسستك بدور «{activeTenant?.role.name ?? '—'}». كل بيانات هذه
-                المؤسسة معزولة عن غيرها، وستُملأ المؤشرات بعد بناء وحدات الأعمال.
-              </p>
-            </div>
-            <div className="welcome-aside" aria-hidden="true">
-              <Icon name="spark" size={30} />
-              <span>الخطوة 10</span>
-            </div>
-          </section>
-
-          <TenantPanel />
-
-          <CompaniesPanel />
-
-          <MembersPanel />
-
-          <CustomersPanel />
-
-          <BillingPanel />
-
-          <InventoryPanel />
-
-          <AuditPanel />
-
-          <TicketsPanel />
-
-          <SettingsPanel />
-
-          <ReportsPanel />
-
-          <section className="stats-grid" aria-label="المؤشرات">
-            {stats.map((stat) => (
-              <article className="stat-card" key={stat.label}>
-                <span className="stat-icon">
-                  <Icon name={stat.icon} size={19} />
-                </span>
+          {view === 'dashboard' && (
+            <>
+              <section className="welcome-banner">
                 <div>
-                  <p className="stat-label">{stat.label}</p>
-                  <p className="stat-value">—</p>
-                  <p className="stat-hint">{stat.hint}</p>
+                  <span className="eyebrow">
+                    {activeTenant ? 'مساحة العمل · ' + activeTenant.name : 'مساحة العمل'}
+                  </span>
+                  <h2>مرحبًا، {user.fullName}</h2>
+                  <p>
+                    أنت تعمل الآن داخل مؤسستك بدور «{activeTenant?.role.name ?? '—'}». كل بيانات هذه
+                    المؤسسة معزولة عن غيرها.
+                  </p>
                 </div>
-              </article>
-            ))}
-          </section>
+                <div className="welcome-aside" aria-hidden="true">
+                  <Icon name="spark" size={30} />
+                  <span>الخطوة 10</span>
+                </div>
+              </section>
 
-          <div className="content-grid">
-            <section className="card" aria-labelledby="system-title">
-              <div className="card-head">
-                <h3 id="system-title">حالة النظام</h3>
-                <button type="button" className="link-button" onClick={refresh}>
-                  إعادة الفحص
-                </button>
-              </div>
-
-              <ul className="status-list">
-                <li>
-                  <span className="status-list-label">
-                    <Icon name="spark" size={17} />
-                    خدمة API
-                  </span>
-                  <span className={`tag ${health.kind === 'online' ? 'tag-ok' : 'tag-off'}`}>
-                    {health.kind === 'online'
-                      ? 'تعمل'
-                      : health.kind === 'checking'
-                        ? '...'
-                        : 'متوقفة'}
-                  </span>
-                </li>
-                <li>
-                  <span className="status-list-label">
-                    <Icon name="database" size={17} />
-                    قاعدة البيانات
-                  </span>
-                  <span
-                    className={`tag ${
-                      database?.status === 'up' ? 'tag-ok' : database ? 'tag-off' : 'tag-muted'
-                    }`}
-                  >
-                    {database ? (database.status === 'up' ? 'تعمل' : 'متوقفة') : '—'}
-                  </span>
-                </li>
-                <li>
-                  <span className="status-list-label">
-                    <Icon name="spark" size={17} />
-                    استجابة القاعدة
-                  </span>
-                  <span className="mono">
-                    {database?.status === 'up' ? `${database.latencyMs} ms` : '—'}
-                  </span>
-                </li>
-                <li>
-                  <span className="status-list-label">
-                    <Icon name="shield" size={17} />
-                    المصادقة
-                  </span>
-                  <span className="tag tag-ok">مفعّلة</span>
-                </li>
-                <li>
-                  <span className="status-list-label">
-                    <Icon name="users" size={17} />
-                    آخر دخول
-                  </span>
-                  <span className="mono">{lastLogin}</span>
-                </li>
-                <li>
-                  <span className="status-list-label">الإصدار</span>
-                  <span className="mono">
-                    {health.kind === 'online' ? health.data.version : '—'}
-                  </span>
-                </li>
-                <li>
-                  <span className="status-list-label">مدة التشغيل</span>
-                  <span className="mono">
-                    {health.kind === 'online' ? `${health.data.uptimeSeconds} ثانية` : '—'}
-                  </span>
-                </li>
-              </ul>
-
-              <p className="card-note">
-                {health.kind === 'offline'
-                  ? `تعذر الاتصال: ${health.message}`
-                  : health.kind === 'online'
-                    ? 'الاتصال بين الواجهة وخدمة API سليم.'
-                    : 'جارٍ التحقق من الاتصال بالخدمة.'}
-              </p>
-            </section>
-
-            <section className="card" aria-labelledby="next-title">
-              <div className="card-head">
-                <h3 id="next-title">الخطوات القادمة</h3>
-                <span className="tag tag-accent">10 من 10</span>
-              </div>
-
-              <ol className="next-list">
-                {nextSteps.map((step, index) => (
-                  <li key={step.title}>
-                    <span className="next-number">{index + 9}</span>
-                    <div>
-                      <p className="next-title">{step.title}</p>
-                      <p className="next-note">{step.note}</p>
-                    </div>
-                    <span className={`tag ${index === 0 ? 'tag-accent' : 'tag-muted'}`}>
-                      {step.state}
+              <section className="stats-grid" aria-label="المؤشرات">
+                {stats.map((stat) => (
+                  <article className="stat-card" key={stat.label}>
+                    <span className="stat-icon">
+                      <Icon name={stat.icon} size={19} />
                     </span>
-                  </li>
+                    <div>
+                      <p className="stat-label">{stat.label}</p>
+                      <p className="stat-value">—</p>
+                      <p className="stat-hint">{stat.hint}</p>
+                    </div>
+                  </article>
                 ))}
-              </ol>
+              </section>
 
-              <p className="card-note">لن تبدأ أي خطوة قبل اعتماد الخطوة السابقة.</p>
-            </section>
-          </div>
+              <TenantPanel />
+            </>
+          )}
 
-          <div className="content-grid">
-            <section className="card" aria-labelledby="activity-title">
-              <div className="card-head">
-                <h3 id="activity-title">أحدث النشاطات</h3>
-                <span className="tag tag-muted">سجل التدقيق — الخطوة 10</span>
-              </div>
-              <div className="empty-state">
-                <span className="empty-icon">
-                  <Icon name="chart" size={26} />
-                </span>
-                <p className="empty-title">لا توجد أحداث بعد</p>
-                <p className="empty-note">
-                  ستظهر هنا عمليات الدخول والتغييرات الحساسة بعد إضافة سجل التدقيق.
-                </p>
-              </div>
-            </section>
-
-            <section className="card" aria-labelledby="modules-title">
-              <div className="card-head">
-                <h3 id="modules-title">وحدات المنصة</h3>
-                <span className="tag tag-muted">12 وحدة</span>
-              </div>
-              <ul className="chip-list">
-                {moduleChips.map((module) => (
-                  <li key={module}>{module}</li>
-                ))}
-              </ul>
-              <p className="card-note">تُبنى الوحدات تدريجيًا فوق النواة نفسها.</p>
-            </section>
-          </div>
+          {view === 'tickets' && <TicketsPanel />}
+          {view === 'customers' && <CustomersPanel />}
+          {view === 'members' && <MembersPanel />}
+          {view === 'billing' && <BillingPanel />}
+          {view === 'inventory' && <InventoryPanel />}
+          {view === 'companies' && <CompaniesPanel />}
+          {view === 'reports' && <ReportsPanel />}
+          {view === 'audit' && <AuditPanel />}
+          {view === 'settings' && <SettingsPanel />}
         </main>
       </div>
     </div>
