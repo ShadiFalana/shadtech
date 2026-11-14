@@ -2454,6 +2454,163 @@ ol {
   }
 }
 
+/* ---------- Inventory ---------- */
+.inventory-panel .card-head .tag {
+  margin-inline-start: auto;
+}
+
+.inventory-toolbar {
+  display: flex;
+  gap: 0.7rem;
+  align-items: flex-end;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.inventory-search {
+  flex: 1;
+  min-width: 220px;
+}
+
+.inventory-form {
+  display: grid;
+  gap: 0.7rem;
+  padding: 0.8rem;
+  border: 1px solid var(--border-soft);
+  border-radius: 12px;
+  background: var(--bg-soft);
+  margin-bottom: 1rem;
+}
+
+.inventory-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.6rem;
+}
+
+.inventory-form-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.product-list {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.product-item {
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--border-soft);
+  border-radius: 12px;
+  background: var(--bg-soft);
+  display: grid;
+  gap: 0.5rem;
+}
+
+.product-head {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.product-identity {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.product-identity strong {
+  font-size: 0.9rem;
+}
+
+.product-stock {
+  display: flex;
+  gap: 0.3rem;
+}
+
+.product-actions {
+  display: flex;
+  gap: 0.3rem;
+}
+
+.product-meta {
+  display: flex;
+  gap: 1rem;
+  color: var(--muted-2);
+  font-size: 0.75rem;
+}
+
+.movement-panel {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border-soft);
+}
+
+.movement-panel select,
+.movement-panel input {
+  padding: 0.45rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--input-bg);
+  color: var(--text);
+  font-size: 0.82rem;
+  outline: none;
+}
+
+@media (max-width: 720px) {
+  .inventory-form-row {
+    grid-template-columns: 1fr;
+  }
+  .inventory-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+/* ---------- Reports ---------- */
+.reports-panel .card-head .tag {
+  margin-inline-start: auto;
+}
+
+.report-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.7rem;
+  margin-bottom: 1rem;
+}
+
+.report-card {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.8rem 0.9rem;
+  border: 1px solid var(--border-soft);
+  border-radius: 12px;
+  background: var(--bg-soft);
+}
+
+.report-card .icon {
+  color: var(--primary);
+}
+
+.report-value {
+  font-size: 1.4rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--text);
+}
+
+.report-label {
+  color: var(--muted-2);
+  font-size: 0.72rem;
+}
+
 /* ---------- Responsive ---------- */
 @media (max-width: 1080px) {
   .content-grid {

@@ -6,7 +6,9 @@ import { CompaniesPanel } from '../components/CompaniesPanel';
 import { TicketsPanel } from '../components/TicketsPanel';
 import { CustomersPanel } from '../components/CustomersPanel';
 import { Icon, type IconName } from '../components/Icon';
+import { InventoryPanel } from '../components/InventoryPanel';
 import { MembersPanel } from '../components/MembersPanel';
+import { ReportsPanel } from '../components/ReportsPanel';
 import { SettingsPanel } from '../components/SettingsPanel';
 import { TenantPanel } from '../components/TenantPanel';
 import { TenantSwitcher } from '../components/TenantSwitcher';
@@ -33,9 +35,9 @@ const navItems: NavItem[] = [
   { label: 'العملاء', icon: 'users', soon: false },
   { label: 'إدارة المستخدمين', icon: 'users', soon: false },
   { label: 'المبيعات والفوترة', icon: 'invoice', soon: false },
-  { label: 'المخزون', icon: 'box' },
+  { label: 'المخزون', icon: 'box', soon: false },
   { label: 'الشركات والفروع', icon: 'building', soon: false },
-  { label: 'التقارير', icon: 'chart' },
+  { label: 'التقارير', icon: 'chart', soon: false },
   { label: 'الإعدادات', icon: 'settings', soon: false },
 ];
 
@@ -232,11 +234,15 @@ export function DashboardPage({ user, onLogout }: DashboardPageProps) {
 
           <BillingPanel />
 
+          <InventoryPanel />
+
           <AuditPanel />
 
           <TicketsPanel />
 
           <SettingsPanel />
+
+          <ReportsPanel />
 
           <section className="stats-grid" aria-label="المؤشرات">
             {stats.map((stat) => (

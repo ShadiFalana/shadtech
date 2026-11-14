@@ -6,6 +6,7 @@ import { AuthModule } from './auth/auth.module';
 import { BillingModule } from './billing/billing.module';
 import { CompaniesModule } from './companies/companies.module';
 import { CustomersModule } from './customers/customers.module';
+import { InventoryModule } from './inventory/inventory.module';
 import { TicketsModule } from './tickets/tickets.module';
 import { HealthModule } from './health/health.module';
 import { PrismaModule } from './prisma/prisma.module';
@@ -29,6 +30,7 @@ import { TenancyModule } from './tenancy/tenancy.module';
     BillingModule,
     CompaniesModule,
     CustomersModule,
+    InventoryModule,
     TicketsModule,
     HealthModule,
   ],
