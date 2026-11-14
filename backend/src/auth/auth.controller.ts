@@ -4,6 +4,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Patch,
   Post,
   Req,
   Res,
@@ -18,6 +19,8 @@ import type { AuthenticatedUser, PublicUser } from './auth.types';
 import { CurrentUser } from './current-user.decorator';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
+import { UpdateProfileDto } from './dto/update-profile.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
 import { JwtAuthGuard } from './jwt-auth.guard';
 
 interface AuthResponse {
@@ -92,6 +95,26 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   getMe(@CurrentUser() user: AuthenticatedUser): Promise<PublicUser> {
     return this.auth.getMe(user.id);
+  }
+
+  @Patch('me')
+  @UseGuards(JwtAuthGuard)
+  updateMe(
+    @CurrentUser() user: AuthenticatedUser,
+    @Body() dto: UpdateProfileDto,
+  ): Promise<PublicUser> {
+    return this.auth.updateProfile(user.id, dto.fullName);
+  }
+
+  @Post('change-password')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @UseGuards(JwtAuthGuard)
+  @Throttle({ default: { limit: 5, ttl: 60_000 } })
+  async changePassword(
+    @CurrentUser() user: AuthenticatedUser,
+    @Body() dto: ChangePasswordDto,
+  ): Promise<void> {
+    await this.auth.changePassword(user.id, dto.currentPassword, dto.newPassword);
   }
 }
 

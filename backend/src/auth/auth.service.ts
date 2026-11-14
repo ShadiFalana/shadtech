@@ -38,6 +38,34 @@ export class AuthService {
     return { initialized: users > 0 };
   }
 
+  async updateProfile(userId: string, fullName: string): Promise<PublicUser> {
+    const updated = await this.prisma.user.update({
+      where: { id: userId },
+      data: { fullName: fullName.trim() },
+    });
+    return toPublicUser(updated);
+  }
+
+  async changePassword(
+    userId: string,
+    currentPassword: string,
+    newPassword: string,
+  ): Promise<void> {
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user) {
+      throw new UnauthorizedException('Account not found');
+    }
+    const valid = await verifyPassword(currentPassword, user.passwordHash);
+    if (!valid) {
+      throw new UnauthorizedException('Current password is incorrect');
+    }
+    const passwordHash = await hashPassword(newPassword);
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { passwordHash },
+    });
+  }
+
   /**
    * Creates the very first platform administrator. Once an account exists,
    * registration stays closed until tenant/user management lands in step 6.

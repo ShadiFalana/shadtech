@@ -2,9 +2,11 @@ import { useState } from 'react';
 import { AuditPanel } from '../components/AuditPanel';
 import { Brand } from '../components/Brand';
 import { CompaniesPanel } from '../components/CompaniesPanel';
+import { TicketsPanel } from '../components/TicketsPanel';
 import { CustomersPanel } from '../components/CustomersPanel';
 import { Icon, type IconName } from '../components/Icon';
 import { MembersPanel } from '../components/MembersPanel';
+import { SettingsPanel } from '../components/SettingsPanel';
 import { TenantPanel } from '../components/TenantPanel';
 import { TenantSwitcher } from '../components/TenantSwitcher';
 import { ThemeToggle } from '../components/ThemeToggle';
@@ -26,14 +28,14 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { label: 'لوحة التحكم', icon: 'dashboard', active: true },
-  { label: 'التذاكر والدعم', icon: 'ticket' },
+  { label: 'التذاكر والدعم', icon: 'ticket', soon: false },
   { label: 'العملاء', icon: 'users', soon: false },
   { label: 'إدارة المستخدمين', icon: 'users', soon: false },
   { label: 'المبيعات والفوترة', icon: 'invoice' },
   { label: 'المخزون', icon: 'box' },
   { label: 'الشركات والفروع', icon: 'building', soon: false },
   { label: 'التقارير', icon: 'chart' },
-  { label: 'الإعدادات', icon: 'settings' },
+  { label: 'الإعدادات', icon: 'settings', soon: false },
 ];
 
 const stats = [
@@ -228,6 +230,10 @@ export function DashboardPage({ user, onLogout }: DashboardPageProps) {
           <CustomersPanel />
 
           <AuditPanel />
+
+          <TicketsPanel />
+
+          <SettingsPanel />
 
           <section className="stats-grid" aria-label="المؤشرات">
             {stats.map((stat) => (
