@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: shadtech
+      POSTGRES_PASSWORD: shadtech
+      POSTGRES_DB: shadtech
+    ports:
+      - '5432:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - '3001:3001'
+    environment:
+      DATABASE_URL: postgresql://shadtech:shadtech@postgres:5432/shadtech?schema=public
+      JWT_SECRET: ${JWT_SECRET:-change-me-in-production}
+      NODE_ENV: production
+      PORT: 3001
+      WEB_ORIGIN: http://localhost:5173
+    depends_on:
+      - postgres
+
+  web:
+    image: nginx:alpine
+    ports:
+      - '5173:80'
+    volumes:
+      - ./apps/web/dist:/usr/share/nginx/html:ro
+    depends_on:
+      - api
+
+volumes:
+  pgdata:

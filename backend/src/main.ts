@@ -1,6 +1,7 @@
 import 'reflect-metadata';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import cookieParser from 'cookie-parser';
 import { AppModule } from './app.module';
 
@@ -23,6 +24,15 @@ async function bootstrap(): Promise<void> {
     }),
   );
   app.enableShutdownHooks();
+
+  const swaggerConfig = new DocumentBuilder()
+    .setTitle('SHADTECH API')
+    .setDescription('SHADTECH platform REST API')
+    .setVersion('0.1.0')
+    .addBearerAuth()
+    .build();
+  const document = SwaggerModule.createDocument(app, swaggerConfig);
+  SwaggerModule.setup('api/docs', app, document);
 
   const port = Number(process.env.PORT ?? 3001);
   await app.listen(port);
