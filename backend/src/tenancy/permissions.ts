@@ -33,6 +33,11 @@ export const PERMISSIONS: PermissionDefinition[] = [
   { key: 'billing.write', group: 'billing', description: 'إدارة الفواتير' },
   { key: 'inventory.read', group: 'inventory', description: 'عرض المخزون' },
   { key: 'inventory.write', group: 'inventory', description: 'إدارة المخزون' },
+  { key: 'services.read', group: 'services', description: 'عرض خدمات IT' },
+  { key: 'services.write', group: 'services', description: 'إدارة خدمات IT' },
+  { key: 'orders.read', group: 'orders', description: 'عرض الطلبات' },
+  { key: 'orders.write', group: 'orders', description: 'إدارة الطلبات' },
+  { key: 'chatbot.read', group: 'chatbot', description: 'استخدام المساعد الذكي' },
   { key: 'reports.read', group: 'reports', description: 'عرض التقارير' },
   { key: 'audit.read', group: 'audit', description: 'عرض سجل التدقيق' },
 
@@ -67,6 +72,11 @@ const managerPermissions = [
   'billing.write',
   'inventory.read',
   'inventory.write',
+  'services.read',
+  'services.write',
+  'orders.read',
+  'orders.write',
+  'chatbot.read',
   'reports.read',
 ];
 
@@ -79,6 +89,10 @@ const agentPermissions = [
   'tickets.read',
   'tickets.write',
   'inventory.read',
+  'services.read',
+  'orders.read',
+  'orders.write',
+  'chatbot.read',
   'reports.read',
 ];
 
@@ -90,6 +104,9 @@ const viewerPermissions = [
   'tickets.read',
   'billing.read',
   'inventory.read',
+  'services.read',
+  'orders.read',
+  'chatbot.read',
   'reports.read',
 ];
 

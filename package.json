@@ -25,7 +25,11 @@
     "typecheck": "npm run typecheck --workspaces --if-present",
     "test": "npm run test -w @shadtech/backend",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "dev:platform": "npm run dev -w platform",
+    "db:platform:generate": "npm run db:generate -w platform",
+    "db:platform:migrate": "npm run db:migrate -w platform",
+    "db:platform:seed": "npm run db:seed -w platform"
   },
   "devDependencies": {
     "prettier": "^3.4.2"

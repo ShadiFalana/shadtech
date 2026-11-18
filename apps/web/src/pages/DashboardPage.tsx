@@ -4,8 +4,11 @@ import { BillingPanel } from '../components/BillingPanel';
 import { Brand } from '../components/Brand';
 import { CompaniesPanel } from '../components/CompaniesPanel';
 import { CustomersPanel } from '../components/CustomersPanel';
+import { ChatbotPanel } from '../components/ChatbotPanel';
 import { Icon, type IconName } from '../components/Icon';
 import { InventoryPanel } from '../components/InventoryPanel';
+import { OrdersPanel } from '../components/OrdersPanel';
+import { ServicesPanel } from '../components/ServicesPanel';
 import { MembersPanel } from '../components/MembersPanel';
 import { ReportsPanel } from '../components/ReportsPanel';
 import { SettingsPanel } from '../components/SettingsPanel';
@@ -36,6 +39,9 @@ type View =
   | 'members'
   | 'billing'
   | 'inventory'
+  | 'services'
+  | 'orders'
+  | 'chatbot'
   | 'companies'
   | 'reports'
   | 'audit'
@@ -48,6 +54,9 @@ const navItems: NavItem[] = [
   { label: 'إدارة المستخدمين', icon: 'users', view: 'members', soon: false },
   { label: 'المبيعات والفوترة', icon: 'invoice', view: 'billing', soon: false },
   { label: 'المخزون', icon: 'box', view: 'inventory', soon: false },
+  { label: 'خدمات IT', icon: 'spark', view: 'services', soon: false },
+  { label: 'الطلبات / المتجر', icon: 'invoice', view: 'orders', soon: false },
+  { label: 'المساعد الذكي', icon: 'spark', view: 'chatbot', soon: false },
   { label: 'الشركات والفروع', icon: 'building', view: 'companies', soon: false },
   { label: 'التقارير', icon: 'chart', view: 'reports', soon: false },
   { label: 'سجل التدقيق', icon: 'chart', view: 'audit', soon: false },
@@ -89,6 +98,9 @@ const viewTitles: Record<View, string> = {
   members: 'المستخدمون',
   billing: 'الفوترة والمبيعات',
   inventory: 'المخزون',
+  services: 'خدمات IT',
+  orders: 'الطلبات / المتجر',
+  chatbot: 'المساعد الذكي',
   companies: 'الشركات والفروع',
   reports: 'التقارير',
   audit: 'سجل التدقيق',
@@ -279,6 +291,9 @@ export function DashboardPage({ user, onLogout }: DashboardPageProps) {
           {view === 'members' && <MembersPanel />}
           {view === 'billing' && <BillingPanel />}
           {view === 'inventory' && <InventoryPanel />}
+          {view === 'services' && <ServicesPanel />}
+          {view === 'orders' && <OrdersPanel />}
+          {view === 'chatbot' && <ChatbotPanel />}
           {view === 'companies' && <CompaniesPanel />}
           {view === 'reports' && <ReportsPanel />}
           {view === 'audit' && <AuditPanel />}
